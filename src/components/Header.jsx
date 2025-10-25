@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShoppingBasket,
@@ -7,14 +7,13 @@ import {
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, NavLink } from "react-router-dom";
-import { useContext } from "react";
-import { CartContext } from "../store/cart-context.jsx";
+import { useCart } from "../store/cart-context";
 
 const Header = () => {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") === "dark" ? "dark" : "light";
   });
-  const { totalQuantity } = useContext(CartContext);
+  const { totalQuantity } = useCart();
 
   useEffect(() => {
     if (theme === "dark") {
