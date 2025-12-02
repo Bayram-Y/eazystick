@@ -27,13 +27,16 @@ import Profile, {
   profileLoader,
 } from "./components/Profile.jsx";
 import Orders from "./components/Orders.jsx";
-import Messages from "./components/admin/Messages.jsx";
-import AdminOrders from "./components/admin/AdminOrders.jsx";
+import Messages, { messagesLoader } from "./components/admin/Messages.jsx";
+import AdminOrders, {
+  adminOrdersLoader,
+} from "./components/admin/AdminOrders.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Register, { registerAction } from "./components/Register.jsx";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./components/OrderSuccess.jsx";
+import { ordersLoader } from "./components/Orders.jsx";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -51,7 +54,6 @@ const routeDefinitions = createRoutesFromElements(
     <Route element={<ProtectedRoute />}>
       <Route path="/checkout" element={<CheckoutForm />} />
       <Route path="/order-success" element={<OrderSuccess />} />
-
       <Route
         path="/profile"
         element={<Profile />}
@@ -61,9 +63,17 @@ const routeDefinitions = createRoutesFromElements(
           return !actionResult?.success;
         }}
       />
-      <Route path="/orders" element={<Orders />} />
-      <Route path="/admin/orders" element={<AdminOrders />} />
-      <Route path="/admin/messages" element={<Messages />} />
+      <Route path="/orders" element={<Orders />} loader={ordersLoader} />
+      <Route
+        path="/admin/orders"
+        element={<AdminOrders />}
+        loader={adminOrdersLoader}
+      />
+      <Route
+        path="/admin/messages"
+        element={<Messages />}
+        loader={messagesLoader}
+      />
     </Route>
   </Route>
 );
