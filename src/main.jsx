@@ -37,6 +37,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./components/OrderSuccess.jsx";
 import { ordersLoader } from "./components/Orders.jsx";
+import { contactLoader } from "./components/Contact.jsx";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -46,7 +47,15 @@ const routeDefinitions = createRoutesFromElements(
     <Route index element={<Home />} loader={productsLoader} />
     <Route path="/home" element={<Home />} loader={productsLoader} />
     <Route path="/about" element={<About />} />
-    <Route path="/contact" element={<Contact />} action={contactAction} />
+    <Route
+      path="/contact"
+      element={<Contact />}
+      loader={contactLoader}
+      action={contactAction}
+      shouldRevalidate={({ actionResult }) => {
+        return !actionResult?.success;
+      }}
+    />
     <Route path="/login" element={<Login />} action={loginAction} />
     <Route path="/register" element={<Register />} action={registerAction} />
     <Route path="/cart" element={<Cart />} />
