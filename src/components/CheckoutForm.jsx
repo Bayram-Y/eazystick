@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { useAuth } from "../store/auth-context";
+import { selectUser } from "../store/auth-slice";
 import apiClient from "../api/apiClient";
-import { useCart } from "../store/cart-context";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addToCart,
+  selectCartItems,
+  selectTotalPrice,
+  clearCart,
+} from "../store/cart-slice";
 import {
   useStripe,
   useElements,
@@ -14,8 +20,11 @@ import PageTitle from "./PageTitle";
 import { toast } from "react-toastify";
 
 export default function CheckoutForm() {
-  const { user } = useAuth();
-  const { cart, totalPrice, clearCart } = useCart();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const cart = useSelector(selectCartItems);
+  const totalPrice = useSelector(selectTotalPrice);
+
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -124,7 +133,7 @@ export default function CheckoutForm() {
             })),
           });
           sessionStorage.setItem("skipRedirectPath", "true");
-          clearCart();
+          dispatch(clearCart());
           navigate("/order-success");
         } catch (orderError) {
           console.error("Failed to create order:", orderError);

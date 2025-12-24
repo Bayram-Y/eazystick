@@ -19,8 +19,6 @@ import ErrorPage from "./components/ErrorPage.jsx";
 import { productsLoader } from "./components/Home.jsx";
 import { contactAction } from "./components/Contact.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
-import { CartProvider } from "./store/cart-context.jsx";
-import { AuthProvider } from "./store/auth-context.jsx";
 import CheckoutForm from "./components/checkoutForm.jsx";
 import Profile, {
   profileAction,
@@ -38,6 +36,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./components/OrderSuccess.jsx";
 import { ordersLoader } from "./components/Orders.jsx";
 import { contactLoader } from "./components/Contact.jsx";
+import store from "./store/store.js";
+import { Provider } from "react-redux";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -92,11 +92,9 @@ const appRouter = createBrowserRouter(routeDefinitions);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Elements stripe={stripePromise}>
-      <AuthProvider>
-        <CartProvider>
-          <RouterProvider router={appRouter} />
-        </CartProvider>
-      </AuthProvider>
+      <Provider store={store}>
+        <RouterProvider router={appRouter} />
+      </Provider>
       <ToastContainer
         position="top-center"
         autoClose={3000}

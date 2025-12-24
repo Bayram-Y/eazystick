@@ -8,9 +8,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useCart } from "../store/cart-context";
-import { useAuth } from "../store/auth-context";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, selectIsAuthenticated, selectUser } from "../store/auth-slice";
+import { selectTotalQuantity } from "../store/cart-slice";
 
 export default function Header() {
   const [theme, setTheme] = useState(() => {
@@ -26,10 +27,14 @@ export default function Header() {
   const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
   const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
 
-  const { totalQuantity } = useCart();
-  const { isAuthenticated, user, logout } = useAuth();
-  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
+  const totalQuantity = useSelector(selectTotalQuantity);
 
+  const dispatch = useDispatch();
+  const logoutAction = () => dispatch(logout());
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectUser);
+
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
 
   useEffect(() => {
     if (theme === "dark") {
@@ -58,7 +63,7 @@ export default function Header() {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    logout();
+    dispatch(logout());
     toast.success("Logged out successfully!");
     navigate("/home");
   };

@@ -2,13 +2,15 @@ import React, { useMemo } from "react";
 import PageTitle from "./PageTitle";
 import { Link } from "react-router-dom";
 import emptyCartImage from "../assets/util/emptycart.png";
-import { useCart } from "../store/cart-context";
+import { useSelector } from "react-redux";
+import { selectCartItems } from "../store/cart-slice";
 import CartTable from "./CartTable";
-import { useAuth } from "../store/auth-context";
+import { selectUser, selectIsAuthenticated } from "../store/auth-slice";
 
 export default function Cart() {
-  const { cart } = useCart();
-  const { isAuthenticated, user } = useAuth();
+  const cart = useSelector(selectCartItems);
+  const user = useSelector(selectUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const isAddressIncomplete = useMemo(() => {
     if (!isAuthenticated) return false;
@@ -27,7 +29,7 @@ export default function Cart() {
 
         {!isCartEmpty ? (
           <>
-           {isAddressIncomplete && (
+            {isAddressIncomplete && (
               <p className="text-red-500 text-lg mt-2 text-center">
                 Please update your address in your profile to proceed to
                 checkout.
@@ -43,7 +45,7 @@ export default function Cart() {
                 Back to Products
               </Link>
               {/* Proceed to Checkout Button */}
-                  <Link
+              <Link
                 to={isAddressIncomplete ? "#" : "/checkout"}
                 className={`py-2 px-4 text-xl font-semibold rounded-sm flex justify-center items-center transition
                                     ${

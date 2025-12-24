@@ -6,11 +6,10 @@ import {
   useActionData,
   useNavigation,
   useNavigate,
-  replace,
 } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import { toast } from "react-toastify";
-import { useAuth } from "../store/auth-context";
+import { useDispatch } from "react-redux";
 
 export default function Profile() {
   const initialProfileData = useLoaderData();
@@ -18,7 +17,7 @@ export default function Profile() {
   const navigation = useNavigation();
   const navigate = useNavigate();
   const isSubmitting = navigation.state === "submitting";
-  const { loginSuccess, logout } = useAuth();
+  const dispatch = useDispatch();
 
   const [profileData, setProfileData] = useState(initialProfileData);
 
@@ -26,7 +25,7 @@ export default function Profile() {
     if (actionData?.success) {
       if (actionData.profileData.emailUpdated) {
         sessionStorage.setItem("skipRedirectPath", "true");
-        logout();
+        dispatch(logout());
         toast.success(
           "Logged out successfully! Login again with updated email"
         );
@@ -42,7 +41,12 @@ export default function Profile() {
             ...actionData.profileData, // updated fields
           };
           // Update in Context
-          loginSuccess(localStorage.getItem("jwtToken"), updatedUser);
+          dispatch(
+            loginSuccess({
+              jwtToken: localStorage.getItem("jwtToken"),
+              user: updatedUser,
+            })
+          );
         }
       }
     }
