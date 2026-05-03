@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cart-slice";
+import { getImageUrl } from "../lib/utils/imageUrl";
 
 export default function ProductDetail() {
   const location = useLocation();
@@ -54,14 +55,14 @@ export default function ProductDetail() {
           onMouseLeave={handleMouseLeave}
           className="w-full md:w-1/2 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg overflow-hidden bg-cover"
           style={{
-            backgroundImage: `url(${product.imageUrl})`,
+            backgroundImage: `url(${getImageUrl(product.imageUrl)})`,
             backgroundSize: isHovering ? "200%" : "cover",
             backgroundPosition: backgroundPosition,
           }}
         >
           <img
-            src={product.imageUrl}
-            alt={product.name}
+             src={getImageUrl(product.imageUrl)}
+            alt={product.name ? product.name : "Product Image"}
             className="w-full h-full opacity-0"
           />
         </div>

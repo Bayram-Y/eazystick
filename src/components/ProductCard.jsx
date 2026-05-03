@@ -3,28 +3,30 @@ import Price from "./Price";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cart-slice";
+import { getImageUrl } from "../lib/utils/imageUrl";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
+  console.log(product.imageUrl);
 
   return (
     <div className="w-72 rounded-md mx-auto border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden flex flex-col bg-white dark:bg-gray-800 hover:border-primary dark:hover:border-lighter transition">
       <Link
-        to={`/products/${product.productId}`}
+        to={`/products/${product.id}`}
         state={{ product }}
         className="relative w-full h-72 border-b border-gray-300 dark:border-gray-600"
       >
         <img
-          src={product.imageUrl}
+          src={getImageUrl(product.imageUrl)}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110"
+          className="w-74 h-92 object-cover transition-transform duration-500 ease-in-out hover:scale-110"
         />
       </Link>
-      <div className="relative h-48 p-4 flex flex-col font-primary">
-        <h2 className="text-xl font-semibold text-primary dark:text-light mb-2">
+      <div className="relative h-50 mt-10 p-4 flex flex-col font-primary">
+        <h2 className="mt-6 text-l font-semibold text-primary dark:text-light">
           {product.name}
         </h2>
-        <p className="text-base text-gray-600 dark:text-lighter mb-4">
+        <p className="text-sm text-gray-600 dark:text-lighter mb-2 line-clamp-3">
           {product.description}
         </p>
         <div className="flex items-center justify-between mt-auto">

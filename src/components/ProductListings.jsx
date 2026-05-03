@@ -17,7 +17,7 @@ export default function ProductListings({ products }) {
     let filteredProducts = products.filter(
       (product) =>
         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchText.toLowerCase())
+        product.description.toLowerCase().includes(searchText.toLowerCase()),
     );
 
     return filteredProducts.slice().sort((a, b) => {
@@ -60,7 +60,7 @@ export default function ProductListings({ products }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-6 py-12">
         {filteredAndSortedProducts.length > 0 ? (
           filteredAndSortedProducts.map((product) => (
-            <ProductCard key={product.productId} product={product} />
+            <ProductCard key={product.id} product={product} />
           ))
         ) : (
           <p className="text-center font-primary font-bold text-lg text-primary dark:text-light">

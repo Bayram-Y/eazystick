@@ -79,7 +79,7 @@ export default function Header() {
       <div className="flex items-center justify-between mx-auto max-w-[1152px] px-6 py-4">
         <Link to="/" className={navLinkClass}>
           <FontAwesomeIcon icon={faTags} className="h-8 w-8" />
-          <span className="font-bold">Eazy Stickers</span>
+          <span className="font-bold">EazyBook</span>
         </Link>
         <nav className="flex items-center py-2 z-10">
           <button
@@ -167,6 +167,14 @@ export default function Header() {
                             </button>
                             {isAdminMenuOpen && (
                               <ul className="ml-4 mt-2 space-y-2">
+                                  <li>
+                                  <Link
+                                    to="/admin/add-product"
+                                    className={dropdownLinkClass}
+                                  >
+                                    Add Product
+                                  </Link>
+                                </li>
                                 <li>
                                   <Link
                                     to="/admin/orders"

@@ -20,6 +20,7 @@ import { productsLoader } from "./components/Home.jsx";
 import { contactAction } from "./components/Contact.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
 import CheckoutForm from "./components/checkoutForm.jsx";
+import AddProduct from "./components/admin/AddProduct.jsx";
 import Profile, {
   profileAction,
   profileLoader,
@@ -72,6 +73,7 @@ const routeDefinitions = createRoutesFromElements(
           return !actionResult?.success;
         }}
       />
+      <Route path="/admin/add-product" element={<AddProduct />} />
       <Route path="/orders" element={<Orders />} loader={ordersLoader} />
       <Route
         path="/admin/orders"
