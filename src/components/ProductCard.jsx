@@ -7,7 +7,6 @@ import { getImageUrl } from "../lib/utils/imageUrl";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
-  console.log(product.imageUrl);
 
   return (
     <div className="w-72 rounded-md mx-auto border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden flex flex-col bg-white dark:bg-gray-800 hover:border-primary dark:hover:border-lighter transition">

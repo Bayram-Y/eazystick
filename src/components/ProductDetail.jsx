@@ -11,6 +11,7 @@ import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cart-slice";
 import { getImageUrl } from "../lib/utils/imageUrl";
+import { useEffect } from "react";
 
 export default function ProductDetail() {
   const location = useLocation();
@@ -44,6 +45,12 @@ export default function ProductDetail() {
 
   const handleViewCart = () => navigate("/cart");
 
+  const handleUpdateProduct = () => {
+    navigate(`/admin/update-product/${product.id}`, {
+      state: { product },
+    });
+  };
+
   return (
     <div className="min-h-[852px] flex items-center justify-center px-6 py-8 font-primary bg-normalbg dark:bg-darkbg">
       <div className="max-w-5xl w-full mx-auto flex flex-col md:flex-row md:space-x-8 px-6 p-8">
@@ -61,7 +68,7 @@ export default function ProductDetail() {
           }}
         >
           <img
-             src={getImageUrl(product.imageUrl)}
+            src={getImageUrl(product.imageUrl)}
             alt={product.name ? product.name : "Product Image"}
             className="w-full h-full opacity-0"
           />
@@ -111,7 +118,7 @@ export default function ProductDetail() {
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              className="w-full px-4 py-2 bg-primary dark:bg-light text-white dark:text-black rounded-md text-lg font-semibold hover:bg-dark dark:hover:bg-lighter transition"
+              className="w- px-4 py-2 bg-primary dark:bg-light text-white dark:text-black rounded-md text-lg font-semibold hover:bg-dark dark:hover:bg-lighter transition"
             >
               Add to Cart
               <FontAwesomeIcon icon={faShoppingCart} className="ml-2" />
@@ -123,6 +130,15 @@ export default function ProductDetail() {
               className="w-full px-4 py-2 bg-primary dark:bg-light text-white dark:text-black rounded-md text-lg font-semibold hover:bg-dark dark:hover:bg-lighter transition"
             >
               View Cart
+              <FontAwesomeIcon icon={faShoppingBasket} className="ml-2" />
+            </button>
+
+            {/* Update Product Button */}
+            <button
+              onClick={handleUpdateProduct}
+              className="w-full px-4 py-2 bg-primary dark:bg-light text-white dark:text-black rounded-md text-lg font-semibold hover:bg-dark dark:hover:bg-lighter transition"
+            >
+              Update Product
               <FontAwesomeIcon icon={faShoppingBasket} className="ml-2" />
             </button>
           </div>

@@ -21,6 +21,7 @@ import { contactAction } from "./components/Contact.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
 import CheckoutForm from "./components/checkoutForm.jsx";
 import AddProduct from "./components/admin/AddProduct.jsx";
+import UpdateProduct from "./components/admin/UpdateProduct.jsx";
 import Profile, {
   profileAction,
   profileLoader,
@@ -74,6 +75,11 @@ const routeDefinitions = createRoutesFromElements(
         }}
       />
       <Route path="/admin/add-product" element={<AddProduct />} />
+      <Route
+        path="/admin/update-product/:id"
+        loader = {productsLoader}
+        element={<UpdateProduct />}
+      />
       <Route path="/orders" element={<Orders />} loader={ordersLoader} />
       <Route
         path="/admin/orders"
@@ -86,7 +92,7 @@ const routeDefinitions = createRoutesFromElements(
         loader={messagesLoader}
       />
     </Route>
-  </Route>
+  </Route>,
 );
 
 const appRouter = createBrowserRouter(routeDefinitions);
@@ -108,5 +114,5 @@ createRoot(document.getElementById("root")).render(
         transition={Bounce}
       />
     </Elements>
-  </StrictMode>
+  </StrictMode>,
 );
