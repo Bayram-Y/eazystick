@@ -39,12 +39,12 @@ export default function CartTable() {
         <tbody className="divide-y divide-primary dark:divide-light">
           {cart.map((item, index) => (
             <tr
-              key={item.id}
+              key={item.productId}
               className="text-sm sm:text-base text-primary dark:text-light text-center"
             >
               <td className="px-4 sm:px-6 py-4 flex items-center">
                 <Link
-                  to={`/products/${item.id}`}
+                  to={`/products/${item.productId}`}
                   state={{ product: item }}
                   className="flex items-center"
                 >

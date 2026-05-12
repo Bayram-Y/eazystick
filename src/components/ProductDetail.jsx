@@ -46,7 +46,7 @@ export default function ProductDetail() {
   const handleViewCart = () => navigate("/cart");
 
   const handleUpdateProduct = () => {
-    navigate(`/admin/update-product/${product.id}`, {
+    navigate(`/admin/update-product/${product.productId}`, {
       state: { product },
     });
   };

@@ -11,7 +11,6 @@ import { getImageUrl } from "../../lib/utils/imageUrl";
 export default function UpdateProduct() {
   const fileInputRef = useRef();
   const { id: productId } = useParams();
-  const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
@@ -30,7 +29,6 @@ export default function UpdateProduct() {
         const res = await apiClient.get(`/products/${productId}`);
         const data = res.data;
 
-        setId(data.id);
         setName(data.name);
         setDescription(data.description);
         setPrice(data.price);
@@ -66,6 +64,8 @@ export default function UpdateProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const productIdNum = Number(productId);
+
     try {
       const formData = new FormData();
 
@@ -88,7 +88,7 @@ export default function UpdateProduct() {
         formData.append("image", image);
       }
 
-      await apiClient.put(`/admin/update-product/${id}`, formData, {
+      await apiClient.put(`/admin/update-product/${productIdNum}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -12,6 +12,7 @@ export default function Cart() {
   const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
+
   const isAddressIncomplete = useMemo(() => {
     if (!isAuthenticated) return false;
     if (!user.address) return true;
