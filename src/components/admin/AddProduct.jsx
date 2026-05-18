@@ -19,25 +19,28 @@ export default function AddProduct() {
   const [stock, setStock] = useState("");
   const [category, setCategory] = useState("");
   const [preview, setPreview] = useState(null);
+  const [discountPercent, setDiscountPercent] = useState("");
+
+  // Live preview uchun
+  const discountedPrice =
+    price && discountPercent > 0
+      ? (price * (1 - discountPercent / 100)).toFixed(2)
+      : null;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // 🔥 MUHIM
+      setPreview(URL.createObjectURL(file)); 
     }
   };
 
-  //  div bosilganda input ochiladi
   const handleClick = () => {
     fileInputRef.current.click();
   };
 
-  // 🚀 submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("SUBMIT BOSILDI"); //  check
-
     if (!image) {
       toast.error("Image is required");
       return;
@@ -55,6 +58,10 @@ export default function AddProduct() {
       formData.append("stock", Number(stock));
       formData.append("category", category.toUpperCase());
       formData.append("image", image);
+
+      if (discountPercent !== "") {
+        formData.append("discountPercent", Number(discountPercent));
+      }
 
       await apiClient.post("/admin/add-product", formData, {
         headers: {
@@ -74,6 +81,7 @@ export default function AddProduct() {
       setCategory("");
       setImage(null);
       setPreview(null);
+      setDiscountPercent("");
     } catch (error) {
       if (error.response?.data?.errors) {
         error.response.data.errors.forEach((err) => toast.error(err));
@@ -198,8 +206,7 @@ export default function AddProduct() {
                 className="mb-3 p-2 border rounded-md text-gray-700 bg-white dark:text-gray-400 dark:bg-gray-700 focus:ring-primary focus:border-primary"
               />
             </div>
-
-            <div className="flex gap-20">
+            <div className="flex gap-20 items-start">
               {/* PRICE */}
               <input
                 type="number"
@@ -209,7 +216,6 @@ export default function AddProduct() {
                 className="mb-3 p-2 border rounded-md text-gray-700 bg-white dark:text-gray-400 dark:bg-gray-700 focus:ring-primary focus:border-primary"
                 required
               />
-
               {/* DATE */}
               <input
                 type="date"
@@ -218,8 +224,29 @@ export default function AddProduct() {
                 className="mb-3 p-2 border rounded-md text-gray-700 bg-white dark:text-gray-400 dark:bg-gray-700 focus:ring-primary focus:border-primary"
               />
             </div>
-
-            <div className="flex gap-20">
+            {/* DISCOUNT */}
+            <div className="flex gap-20 items-start">
+              <div className="flex flex-col flex-1">
+                <input
+                  type="number"
+                  placeholder="Discount % (0 = remove)"
+                  value={discountPercent}
+                  onChange={(e) => setDiscountPercent(e.target.value)}
+                  min={0}
+                  max={100}
+                  className="mb-1 p-2 border rounded-md text-gray-700 bg-white dark:text-gray-400 dark:bg-gray-700 focus:ring-primary focus:border-primary"
+                />
+                {/* Live preview */}
+                {discountedPrice && (
+                  <p className="text-xs text-green-600 dark:text-green-400">
+                    Sale price:{" "}
+                    <span className="font-semibold">${discountedPrice}</span>
+                    <span className="ml-2 text-gray-400 line-through">
+                      ${Number(price).toFixed(2)}
+                    </span>
+                  </p>
+                )}
+              </div>
               {/* PAGES */}
               <input
                 type="number"

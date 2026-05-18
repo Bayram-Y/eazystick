@@ -1,14 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PageTitle from "../PageTitle";
 import apiClient from "../../api/apiClient";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { Category, CategoryLabel } from "../../lib/enums/product.enum";
-import { useParams, Form } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getImageUrl } from "../../lib/utils/imageUrl";
 
 export default function UpdateProduct() {
+  const navigate = useNavigate();
   const fileInputRef = useRef();
   const { id: productId } = useParams();
   const [name, setName] = useState("");
@@ -21,7 +23,14 @@ export default function UpdateProduct() {
   const [pages, setPages] = useState("");
   const [stock, setStock] = useState("");
   const [category, setCategory] = useState("");
+  const [discountPercent, setDiscountPercent] = useState("");
   const [preview, setPreview] = useState(null);
+
+  // Live preview uchun
+  const discountedPrice =
+    price && discountPercent > 0
+      ? (price * (1 - discountPercent / 100)).toFixed(2)
+      : null;
 
   useEffect(() => {
     const getProduct = async () => {
@@ -38,7 +47,7 @@ export default function UpdateProduct() {
         setPages(data.pages || "");
         setStock(data.stock || "");
         setCategory(data.category || "");
-
+        setDiscountPercent(data.discountPercent?.toString() || "");
         setPreview(getImageUrl(data.imageUrl));
       } catch (err) {
         toast.error("Failed to load product");
@@ -77,26 +86,63 @@ export default function UpdateProduct() {
       if (language?.trim()) formData.append("language", language);
       if (pages) formData.append("pages", pages);
       if (stock) formData.append("stock", stock);
-
       if (category) formData.append("category", category);
 
-      if (image) {
+      if (discountPercent !== "") {
+        formData.append("discountPercent", Number(discountPercent));
+      }
+
+      if (image instanceof File) {
         if (image.size > 5 * 1024 * 1024) {
           toast.error("Image size must be less than 5MB");
           return;
         }
         formData.append("image", image);
+        console.log("Image: =======>>>>>>>>>>>>>>", image.name, image.size);
+        console.log("IMAGE TYPE:", image);
+        console.log("IS FILE:", image instanceof File);
       }
 
-      await apiClient.put(`/admin/update-product/${productIdNum}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      for (let pair of formData.entries()) {
+        console.log(
+          "FORM DATA: ============================+>",
+          pair[0],
+          pair[1],
+        );
+      }
 
+      const res = await apiClient.put(
+        `/admin/update-product/${productIdNum}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      console.log("Updated Product ======================>:", res.data); // 👈 SHUNI KO‘R
       toast.success("Product updated successfully");
+      console.log("SUBMIT BOSILDI ==========>>>>>>>>>>>>>>>"); //  check
     } catch (error) {
+      console.log("ERROR FULL:", error);
+      console.log("ERROR DATA:", error.response?.data);
+      console.log("STATUS:", error.response?.status);
       toast.error(error.response?.data?.message || "Update failed");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+
+    try {
+      await apiClient.delete(`/admin/products/delete-product/${productId}`);
+      toast.success("Product deleted successfully");
+      // redirect (optional)
+      navigate("/admin/add-product"); // yoki mavjud route
+    } catch (error) {
+      toast.error("Delete failed");
     }
   };
 
@@ -104,12 +150,12 @@ export default function UpdateProduct() {
     <div className="min-h-screen container mx-auto px-6 py-8 font-primary dark:bg-darkbg">
       <PageTitle title="Update Product" />
 
-      <Form
+      <form
         onSubmit={handleSubmit}
         className="flex flex-col md:flex-row gap-40 bg-white dark:bg-gray-700 shadow-lg rounded-xl p-8"
       >
         {/* LEFT - IMAGE */}
-        <div className="w-1/2 pr-8 border-r border-gray-400 dark:border-gray-600">
+        <div className="w-1/2 pr-10 border-r border-gray-400 dark:border-gray-600">
           <h2 className="text-xl font-semibold mb-4 text-primary dark:text-light">
             Update Image
           </h2>
@@ -236,7 +282,30 @@ export default function UpdateProduct() {
               />
             </div>
 
-            <div className="flex gap-20">
+            {/* DISCOUNT */}
+            <div className="flex gap-20 items-start">
+              <div className="flex flex-col flex-1">
+                <input
+                  type="number"
+                  placeholder="Discount % (0 = remove)"
+                  value={discountPercent}
+                  onChange={(e) => setDiscountPercent(e.target.value)}
+                  min={0}
+                  max={100}
+                  className="mb-1 p-2 border rounded-md text-gray-700 bg-white dark:text-gray-400 dark:bg-gray-700 focus:ring-primary focus:border-primary"
+                />
+                {/* Live preview */}
+                {discountedPrice && (
+                  <p className="text-xs text-green-600 dark:text-green-400">
+                    Sale price:{" "}
+                    <span className="font-semibold">${discountedPrice}</span>
+                    <span className="ml-2 text-gray-400 line-through">
+                      ${Number(price).toFixed(2)}
+                    </span>
+                  </p>
+                )}
+              </div>
+
               {/* PAGES */}
               <input
                 type="number"
@@ -265,9 +334,17 @@ export default function UpdateProduct() {
             >
               Update Product
             </button>
+
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 cursor-pointer"
+            >
+              Delete Product
+            </button>
           </div>
         </div>
-      </Form>
+      </form>
     </div>
   );
 }

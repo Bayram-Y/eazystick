@@ -57,20 +57,20 @@ export default function ProductDetail() {
         {/* Product Image with Zoom Effect */}
         <div
           ref={zoomRef}
-          onMouseMove={isHovering ? handleMouseMove : null}
+          onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="w-full md:w-1/2 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg overflow-hidden bg-cover"
-          style={{
-            backgroundImage: `url(${getImageUrl(product.imageUrl)})`,
-            backgroundSize: isHovering ? "200%" : "cover",
-            backgroundPosition: backgroundPosition,
-          }}
+          className="w-full md:w-1/2 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg overflow-hidden bg-gray-50 dark:bg-gray-800"
         >
           <img
             src={getImageUrl(product.imageUrl)}
-            alt={product.name ? product.name : "Product Image"}
-            className="w-full h-full opacity-0"
+            alt={product.name ?? "Product Image"}
+            className="w-full h-full object-contain p-2"
+            style={{
+              transformOrigin: backgroundPosition, // "50% 50%" formatida
+              transform: isHovering ? "scale(2)" : "scale(1)",
+              transition: "transform 0.1s ease",
+            }}
           />
         </div>
 
