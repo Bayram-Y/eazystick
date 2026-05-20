@@ -14,8 +14,19 @@ export default function CartTable() {
   const dispatch = useDispatch();
   const cart = useSelector(selectCartItems);
 
+  const getFinalPrice = (item) => {
+    const price = Number(item.price ?? 0);
+    const discountPercent = Number(item.discountPercent ?? 0);
+
+    if (discountPercent > 0) {
+      return Number((price * (1 - discountPercent / 100)).toFixed(2));
+    }
+
+    return price;
+  };
+
   const subtotal = cart
-    .reduce((acc, item) => acc + item.price * item.quantity, 0)
+    .reduce((acc, item) => acc + getFinalPrice(item) * item.quantity, 0)
     .toFixed(2);
 
   const updateCartQuantity = (productId, quantity) => {
@@ -73,7 +84,18 @@ export default function CartTable() {
                 />
               </td>
               <td className="px-4 sm:px-6 py-4 text-base font-light">
-                ${item.price.toFixed(2)}
+                {item.discountPercent > 0 ? (
+                  <div className="flex flex-col items-center">
+                    <span className="line-through text-gray-400 text-sm">
+                      ${item.price.toFixed(2)}
+                    </span>
+                    <span className="text-red-500 font-semibold">
+                      ${getFinalPrice(item).toFixed(2)}
+                    </span>
+                  </div>
+                ) : (
+                  <span>${item.price.toFixed(2)}</span>
+                )}
               </td>
               <td className="px-4 sm:px-6 py-4">
                 <button

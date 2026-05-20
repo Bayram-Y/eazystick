@@ -80,12 +80,12 @@ export default function UpdateProduct() {
 
       if (name?.trim()) formData.append("name", name);
       if (description?.trim()) formData.append("description", description);
-      if (price) formData.append("price", price);
       if (author?.trim()) formData.append("author", author);
       if (publishedDate) formData.append("publishedDate", publishedDate);
       if (language?.trim()) formData.append("language", language);
-      if (pages) formData.append("pages", pages);
-      if (stock) formData.append("stock", stock);
+      if (pages) formData.append("pages", Number(pages));
+      if (stock) formData.append("stock", Number(stock));
+      if (price) formData.append("price", Number(price));
       if (category) formData.append("category", category);
 
       if (discountPercent !== "") {
@@ -98,17 +98,6 @@ export default function UpdateProduct() {
           return;
         }
         formData.append("image", image);
-        console.log("Image: =======>>>>>>>>>>>>>>", image.name, image.size);
-        console.log("IMAGE TYPE:", image);
-        console.log("IS FILE:", image instanceof File);
-      }
-
-      for (let pair of formData.entries()) {
-        console.log(
-          "FORM DATA: ============================+>",
-          pair[0],
-          pair[1],
-        );
       }
 
       const res = await apiClient.put(
