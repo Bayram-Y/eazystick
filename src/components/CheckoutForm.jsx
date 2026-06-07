@@ -8,6 +8,13 @@ import {
   selectTotalPrice,
   clearCart,
 } from "../store/cart-slice";
+
+import {
+  selectCartSubtotal,
+  selectCartItemsWithFinalPrice,
+} from "../store/cart-selector";
+
+
 import {
   useStripe,
   useElements,
@@ -23,8 +30,9 @@ export default function CheckoutForm() {
   
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const cart = useSelector(selectCartItems);
-  const totalPrice = useSelector(selectTotalPrice);
+  const cart = useSelector(selectCartItemsWithFinalPrice);
+   const subtotal = useSelector(selectCartSubtotal);
+  
 
   const stripe = useStripe();
   const elements = useElements();
@@ -91,7 +99,7 @@ export default function CheckoutForm() {
 
     try {
       const response = await apiClient.post("/payment/create-payment-intent", {
-        amount: totalPrice * 100,
+        amount: subtotal * 100,
         currency: "usd",
       });
 
@@ -124,13 +132,13 @@ export default function CheckoutForm() {
         toast.success("Payment successful!");
         try {
           await apiClient.post("/orders", {
-            totalPrice: totalPrice,
+            totalPrice: subtotal,
             paymentId: paymentIntent.id,
             paymentStatus: paymentIntent.status,
             items: cart.map((item) => ({
               productId: item.productId,
               quantity: item.quantity,
-              price: item.price,
+              price: item.finalPrice,
             })),
           });
           sessionStorage.setItem("skipRedirectPath", "true");
@@ -172,7 +180,7 @@ export default function CheckoutForm() {
         <PageTitle title="Complete Your Payment" />
 
         <p className="text-center mt-8 text-lg text-gray-600 dark:text-lighter mb-8">
-          Amount to be charged: <strong>${totalPrice.toFixed(2)}</strong>
+          Amount to be charged: <strong>${subtotal.toFixed(2)}</strong>
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">

@@ -3,6 +3,7 @@ import { useLoaderData, useRevalidator } from "react-router-dom";
 import PageTitle from "../PageTitle";
 import apiClient from "../../api/apiClient";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../../lib/utils/imageUrl";
 
 export default function AdminOrders() {
   const orders = useLoaderData();
@@ -108,7 +109,7 @@ export default function AdminOrders() {
                     className="flex items-center border-b pb-4 last:border-b-0"
                   >
                     <img
-                      src={item.imageUrl}
+                      src={getImageUrl(item.imageUrl)}
                       alt={item.productName}
                       className="w-16 h-16 object-cover rounded-md mr-4"
                     />

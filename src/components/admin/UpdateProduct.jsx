@@ -100,7 +100,7 @@ export default function UpdateProduct() {
         formData.append("image", image);
       }
 
-      const res = await apiClient.put(
+      const res = await apiClient.post(
         `/admin/update-product/${productIdNum}`,
         formData,
         {

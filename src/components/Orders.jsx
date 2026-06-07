@@ -2,6 +2,7 @@ import React from "react";
 import apiClient from "../api/apiClient";
 import { useLoaderData } from "react-router-dom";
 import PageTitle from "./PageTitle";
+import { getImageUrl } from "../lib/utils/imageUrl";
 
 export default function Orders() {
   const orders = useLoaderData();
@@ -40,7 +41,7 @@ export default function Orders() {
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Total Price:{" "}
                 <span className="font-medium text-gray-800 dark:text-gray-200">
-                  ${order.totalPrice}
+                  ${order.totalPrice.toFixed(2)}
                 </span>
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -54,7 +55,7 @@ export default function Orders() {
                 {order.items.map((item, index) => (
                   <div key={index} className="flex items-center border-b pb-4">
                     <img
-                      src={item.imageUrl}
+                      src={getImageUrl(item.imageUrl)}
                       alt={item.productName}
                       className="w-16 h-16 object-cover rounded-md mr-4"
                     />
@@ -66,7 +67,7 @@ export default function Orders() {
                         Quantity: {item.quantity}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Price: ${item.price}
+                        Price: ${item.finalPrice.toFixed(2)}
                       </p>
                     </div>
                   </div>

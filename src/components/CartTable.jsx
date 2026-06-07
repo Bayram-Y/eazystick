@@ -5,6 +5,12 @@ import {
   selectCartItems,
   removeFromCart,
 } from "../store/cart-slice";
+
+import {
+  selectCartSubtotal,
+  selectCartItemsWithFinalPrice,
+} from "../store/cart-selector";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
@@ -12,27 +18,18 @@ import { getImageUrl } from "../lib/utils/imageUrl";
 
 export default function CartTable() {
   const dispatch = useDispatch();
-  const cart = useSelector(selectCartItems);
 
-  const getFinalPrice = (item) => {
-    const price = Number(item.price ?? 0);
-    const discountPercent = Number(item.discountPercent ?? 0);
+  const cart = useSelector(selectCartItemsWithFinalPrice);
+  const subtotal = useSelector(selectCartSubtotal);
 
-    if (discountPercent > 0) {
-      return Number((price * (1 - discountPercent / 100)).toFixed(2));
-    }
-
-    return price;
-  };
-
-  const subtotal = cart
-    .reduce((acc, item) => acc + getFinalPrice(item) * item.quantity, 0)
-    .toFixed(2);
-
-  const updateCartQuantity = (productId, quantity) => {
+  const updateCartQuantity = (productId, newQty) => {
     const product = cart.find((item) => item.productId === productId);
+
     dispatch(
-      addToCart({ product, quantity: quantity - (product?.quantity || 0) }),
+      addToCart({
+        product,
+        quantity: newQty - product.quantity,
+      }),
     );
   };
 
@@ -87,14 +84,14 @@ export default function CartTable() {
                 {item.discountPercent > 0 ? (
                   <div className="flex flex-col items-center">
                     <span className="line-through text-gray-400 text-sm">
-                      ${item.price.toFixed(2)}
+                      ${item.price}
                     </span>
                     <span className="text-red-500 font-semibold">
-                      ${getFinalPrice(item).toFixed(2)}
+                      ${item.finalPrice}
                     </span>
                   </div>
                 ) : (
-                  <span>${item.price.toFixed(2)}</span>
+                  <span>${item.finalPrice}</span>
                 )}
               </td>
               <td className="px-4 sm:px-6 py-4">
@@ -117,7 +114,7 @@ export default function CartTable() {
                 Subtotal
               </td>
               <td className="text-lg text-primary dark:text-blue-400 font-medium px-4 sm:px-6 py-4">
-                ${subtotal}
+                ${subtotal.toFixed(2)}
               </td>
               <td></td>
             </tr>
