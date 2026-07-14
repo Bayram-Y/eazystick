@@ -11,9 +11,10 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/24/solid";
 
+import LikeButton from "./LikeButton";
+
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
-  console.log("Rendering ProductCard for:", product);
 
   const hasDiscount =
     product?.discountPercent != null && product.discountPercent > 0;
@@ -65,16 +66,17 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
-        {/* Wishlist button */}
-        <button
-          className=" cursor-pointer absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 dark:bg-gray-900/90 border border-gray-200 dark:border-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white hover:scale-110"
-          onClick={(e) => {
-            e.preventDefault();
-          }}
-          aria-label="Add to Wishlist"
+        {/* Like Button */}
+        <div
+          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-200"
+          onClick={(e) => e.preventDefault()}
         >
-          <HeartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-        </button>
+          <LikeButton
+            productId={product.productId} 
+            initialCount={product.likesCount}
+            initialLiked={product.isLikedByCurrentUser}
+          />
+        </div>
       </Link>
 
       {/* Body */}
